@@ -1,6 +1,6 @@
 # https://kubernetes.io/docs/admin/node-conformance/
 # https://github.com/kubernetes/kubernetes/blob/master/test/e2e_node/conformance/build/Dockerfile
-all: build run
+all: build
 
 build:
 	cp $(GOPATH)/src/k8s.io/kubernetes/_output/dockerized/bin/linux/amd64/e2e.test ./bin/
