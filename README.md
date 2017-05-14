@@ -1,5 +1,8 @@
 # I Containerized the k8s e2e's.
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/ozdanborne/k8s-e2e.svg)](https://hub.docker.com/r/ozdanborne/k8s-e2e/)
+
+
 #### How to run the k8s-e2e's before I containerized them:
 
 Step 1: **Build Kubernetes**.
