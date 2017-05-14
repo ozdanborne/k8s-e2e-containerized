@@ -10,7 +10,7 @@ Step 2: Run the Kubernetes End-to-End Tests.
 
 Step 1: Run the Kubernetes End-to-End Tests.
 
-Step 2: That's it. There is no step 2.
+Step 2: Congratulate yourself on not even having to build Kubernetes first.
 
 ### You too can run the k8s-e2e's on your cluster __without having to build Kubernetes first__.
 
