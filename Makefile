@@ -3,7 +3,7 @@
 all: build
 
 build: bin/e2e.test
-	docker build -t djosborne/k8s-e2e .
+	docker build -t ozdanborne/k8s-e2e .
 
 bin/e2e.test:
 	mkdir -p bin
