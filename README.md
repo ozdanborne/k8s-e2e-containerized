@@ -43,6 +43,11 @@ are set for every pod:
 kubectl run e2e --image=ozdanborne/k8s-e2e --restart=Never --attach -- ./e2e.test --ginkgo.focus="(Networking).*(\[Conformance\])|\[Feature:NetworkPolicy\]"
 ```
 
+### Test Results XML
+
+XML test results will be output to `/result` in the container. Volume mount this
+directory onto the host to view results once the container has finished.
+
 ## Future Work
 
 **Pass Target Apiserver as Param**
