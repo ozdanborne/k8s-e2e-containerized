@@ -1,0 +1,6 @@
+package: github.com/ozdanborne/k8s-e2es-dockerized
+import: []
+testImport:
+- package: k8s.io/kubernetes
+  subpackages:
+  - test/e2e
