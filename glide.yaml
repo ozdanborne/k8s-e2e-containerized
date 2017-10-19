@@ -1,6 +1,7 @@
-package: github.com/ozdanborne/k8s-e2es-dockerized
+package: github.com/ozdanborne/k8s-e2es-containerized
 import: []
 testImport:
 - package: k8s.io/kubernetes
+  version: c42c34daf2325adadd2f1b7b34327675217ca290
   subpackages:
   - test/e2e
