@@ -1,56 +1,68 @@
-# I Containerized the k8s e2e's.
+# Containerized Kubernetes e2e's
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/ozdanborne/k8s-e2e.svg)](https://hub.docker.com/r/ozdanborne/k8s-e2e/)
 
+#### Usage
 
-#### How to run the k8s-e2e's before I containerized them:
-
-Step 1: **Build Kubernetes**.
-
-Step 2: Run the Kubernetes End-to-End Tests.
-
-#### How to run the k8s-e2e's now that I containerized them:
-
-Step 1: Run the Kubernetes End-to-End Tests.
-
-Step 2: Congratulate yourself on not even having to build Kubernetes first.
-
-### You too can run the k8s-e2e's on your cluster without having to build Kubernetes first.
-
-#### Run using Docker
-
-To run the e2e's using Docker, volume mount in a populated kubeconfig:
-
-```
-docker run -v ~/.kube/config:/root/kubeconfig ozdanborne/k8s-e2e
-```
-
-If your apiserver is running at `localhost:8080` with no auth, you can
-rely on [the default kubeconfig already at `/root/kubeconfig`](https://github.com/ozdanborne/k8s-e2e-containerized/blob/run-as-plain-container/kubeconfig).
+If your k8s-apiserver is running at `localhost:8080` with no auth:
 
 ```
 docker run --net=host ozdanborne/k8s-e2e
 ```
 
-#### Run using Kubernetes
+Otherwise, volume mount your own kubeconfig:
 
-You can also run the e2e's as a Kubernetes pod by overriding the default
-command with one which leaves out `-kubeconfig`. When omitted, the e2e's will
-rely on the `KUBERNETES_SERVICE_HOST` and `KUBERNETES_SERVICE_PORT` which
-are set for every pod:
-
-```
-kubectl run e2e --image=ozdanborne/k8s-e2e --restart=Never --attach -- ./e2e.test --ginkgo.focus="(Networking).*(\[Conformance\])|\[Feature:NetworkPolicy\]"
+```bash
+docker run --net=host -v ~/.kube/config:/root/kubeconfig ozdanborne/k8s-e2e
 ```
 
-### Test Results XML
+###### Configure ginkgo.focus
+
+```
+docker run --net=host -e FOCUS='Conformance' ozdanborne/k8s-e2e
+```
+
+###### XML Results
 
 XML test results will be output to `/result` in the container. Volume mount this
-directory onto the host to view results once the container has finished.
+directory onto the host to view results once the container has finished:
 
-## Future Work
+```docker run --net=host ozdanborne/k8s-e2e
+docker run --net=host -v ./result:/result ozdanborne/k8s-e2e
+```
 
-**Pass Target Apiserver as Param**
+####  Building
 
-It'd be useful to accept an apiserver address as a param at runtime.
-Unfortunately, I couldn't get `e2e.test` to use the `-host` passed to it.
+###### Docker Image
+
+```
+docker build -t ozdanborne/k8s-e2e:dev .
+```
+
+> Docker builds use multi-stage builds and do not leave a binary on the host. If you need a binary on the host, you must manually build it (see next section).
+
+###### Binary
+
+1. Install glide dependencies:
+
+   ```
+   glide install -v
+   ```
+
+2. Generate go-bindata for Kubernetes:
+
+   ```
+   pushd vendor/k8s.io/kubernetes
+   go-bindata \
+     -pkg generated -ignore .jpg -ignore .png -ignore .md \
+     ./examples/* ./docs/user-guide/* test/e2e/testing-manifests/kubectl/* test/images/*
+   mv bindata.go test/e2e/generated
+   popd
+   ```
+
+3. Build e2e.test
+
+   ```
+   go test -o e2e.test -c .
+   ```
+
