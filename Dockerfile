@@ -13,7 +13,8 @@ RUN glide install -v
 RUN cd vendor/k8s.io/kubernetes && \
     go-bindata \
     -pkg generated -ignore .jpg -ignore .png -ignore .md \
-    ./examples/* ./docs/user-guide/* test/e2e/testing-manifests/kubectl/* test/images/* && mv bindata.go test/e2e/generated
+    ./examples/* ./docs/user-guide/* test/e2e/testing-manifests/kubectl/* test/images/* && \
+    mv bindata.go test/e2e/generated
 ADD src .
 RUN CGO_ENABLED=0 go test -c -o e2e.test .
 FROM alpine:3.6
@@ -21,5 +22,6 @@ VOLUME /report
 COPY --from=0 /go/src/github.com/ozdanborne/k8s-e2e-containerized/e2e.test /usr/local/bin/e2e.test
 ADD kubeconfig /root/kubeconfig
 ENV FOCUS="(Networking).*(\[Conformance\])|\[Feature:NetworkPolicy\]"
-CMD e2e.test -kubeconfig=/root/kubeconfig --ginkgo.focus="$FOCUS" -report-dir=/report
+ENV SKIP="named port"
+CMD e2e.test -kubeconfig=/root/kubeconfig --ginkgo.focus="$FOCUS" --ginkgo.skip="$SKIP" -report-dir=/report
 
